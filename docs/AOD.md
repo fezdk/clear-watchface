@@ -1,33 +1,38 @@
-# AOD og forebyggelse af burn-in
+# AOD and burn-in mitigation
 
-AOD indeholder kun tiden og batteriindikatoren. Sort baggrund, ingen buer,
-vejr, dato, sekundvisning eller kontinuerlig animation. Tidsfonten har sort
-fyld og en 2,2 enheder bred grå kontur (#E0E0E0). Batteriikonet fyldes proportionalt efter batteriprocenten; fladen er lille.
-Fra 0.2.1 er ikon og procent dæmpet til #A0A0A0, mens tidskonturen beholder #E0E0E0. Urets egen ambient-dæmpning kommer oveni farven.
-Læselighed og den faktiske lysstyrke skal indstilles ud fra det fysiske ur.
+AOD contains only the time and battery indicator on a black background, with
+no arcs, weather, date, seconds, or continuous animation. The time font uses
+black fill and a gray outline (#E0E0E0) that is 2.2 layout units wide.
+The battery icon fills in proportion to the battery percentage and occupies
+a small area. Since 0.2.1, the icon and percentage use the dimmer #A0A0A0,
+while the time outline retains #E0E0E0. The watch's own ambient dimming is
+applied in addition to these colors. Readability and actual brightness need
+to be assessed on the physical watch.
 
-Hele AOD-gruppen (også kolon, batteriikon og procent) forskydes ved minutskift.
-Den gennemløber 25 positioner i et 5 × 5 gitter, fra −2 til +2 layoutenheder
-på begge akser. En layoutenhed skaleres fra en 450 × 450 urskive til skærmen.
-Der anvendes kun time/minut-datakilder, så bevægelsen ikke kræver sekundticks.
-Systemets eventuelle ekstra forskydning kan forekomme oveni; indholdet har
-luft til skærmkanten. Der er ikke slået nogen systembeskyttelse fra.
+The entire AOD group, including the colon, battery icon, and percentage, shifts
+at each minute change. It cycles through 25 positions on a 5 × 5 grid, from
+−2 to +2 layout units on both axes. Layout units scale from a 450 × 450 watch
+face to the display. Only hour and minute data sources are used, so movement
+does not require second ticks. Additional system shifting may apply; the
+content has clearance from the screen edge. No system protection is disabled.
 
-Automatiske kontroller gennemløber alle 1.440 klokkeslæt og 101 batteriniveauer.
-Pixelestimatet bruger en tykkere 3-pixel-kontur og tæller alle lysende pixels,
-uden at give rabat for grå farve eller systemets dæmpning. Det er et
-konservativt fontbaseret estimat, ikke Samsungs officielle OPR-analyse eller
-en måling af fysisk panelslid. Se valideringsrapporten for resultatet.
+Automated checks cover all 1,440 times of day and 101 battery levels.
+The pixel estimate uses a thicker 3-pixel outline and counts all lit pixels
+without discounting gray colors or system dimming. This is a conservative
+font-based estimate, not Samsung's official On Pixel Ratio (OPR) analysis or
+a measurement of physical panel wear. See the
+[validation report](VALIDATION.md) for results.
 
-Pixel shifting, få lysende pixels og lav intensitet reducerer risikoen.
-De giver ingen garanti mod OLED burn-in ved langvarig AOD-brug.
+Pixel shifting, fewer lit pixels, and low intensity reduce risk. They do not
+guarantee protection from OLED burn-in during long-term AOD use.
 
-Primærkilder kontrolleret 11. september 2026:
+Primary sources checked on September 11, 2026:
 
-- https://developer.android.com/training/wearables/wff/ambient
-- https://developer.android.com/reference/wear-os/wff/group/part/text/decoration/outline
-- https://developer.samsung.com/watch-face-studio/faq.html
-- https://developer.samsung.com/watch-face-studio/user-guide/always-on.html
+- [Android: ambient mode](https://developer.android.com/training/wearables/wff/ambient)
+- [WFF text outline reference](https://developer.android.com/reference/wear-os/wff/group/part/text/decoration/outline)
+- [Samsung Watch Face Studio FAQ](https://developer.samsung.com/watch-face-studio/faq.html)
+- [Samsung always-on design guide](https://developer.samsung.com/watch-face-studio/user-guide/always-on.html)
 
-Samsung beskriver systemforskydning på nogle enheder og anbefaler højst 15 %
-pixelbrug. Den konkrete Galaxy Watch9-adfærd er endnu ikke målt.
+Samsung describes system shifting on some devices and recommends no more than
+15% lit-pixel coverage. The specific Galaxy Watch9 system behavior has not yet
+been measured.

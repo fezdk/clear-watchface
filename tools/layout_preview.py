@@ -75,19 +75,19 @@ def render(n,ambient=False):
 
 def svg(path,ambient):
  root=ET.parse(path).getroot()
- return '<svg viewBox="0 0 450 450" role="img" aria-label="Urskive"><circle cx="225" cy="225" r="225" fill="black"/>'+render(root,ambient)+'</svg>'
+ return '<svg viewBox="0 0 450 450" role="img" aria-label="Watch face"><circle cx="225" cy="225" r="225" fill="black"/>'+render(root,ambient)+'</svg>'
 
 old=ROOT/'design/before.xml';new=RES/'raw/watchface.xml'
 fonts=''.join('@font-face{font-family:'+name+';src:url(data:font/ttf;base64,'+data(RES/'font'/f'{name}.ttf')+')} ' for name in ['clear_bold','clear_regular'])
 cards=''
-for mode,label in [(False,'AKTIV'),(True,'AOD')]:
+for mode,label in [(False,'ACTIVE'),(True,'AOD')]:
  cards+=f'<div class="mode-label">{label}</div><div class="pair">'
- for path,caption in [(old,'Nuværende · 0.1'),(new,'Forslag · 0.2')]:
+ for path,caption in [(old,'Before · 0.1'),(new,'Updated · 0.2')]:
   cards+='<figure>'+svg(path,mode)+f'<figcaption>{caption}</figcaption></figure>'
  cards+='</div>'
-page='''<!doctype html><html lang="da"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Clear Watchface · Før og efter</title><style>'''+fonts+'''
+page='''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Clear Watchface · Before and after</title><style>'''+fonts+'''
 *{box-sizing:border-box}body{margin:0;background:#15181b;color:#e8ebed;font:16px system-ui,sans-serif}main{max-width:1100px;margin:auto;padding:30px 38px}header{display:flex;justify-content:space-between;gap:24px;align-items:center;margin-bottom:20px}h1{font-size:25px;font-weight:550;margin:0 0 6px}p{color:#aeb6bd;margin:4px 0;line-height:1.5}.badge{border:1px solid #38434a;color:#8fdae1;border-radius:20px;padding:7px 13px;font-size:13px;white-space:nowrap}.pair{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-bottom:26px}figure{margin:0;text-align:center}svg{width:100%;max-width:420px;display:block;margin:auto}figcaption{font-size:16px;color:#bec7cd;margin-top:10px}.mode-label{font-size:13px;letter-spacing:.15em;color:#89979f;border-top:1px solid #30373c;padding:15px 0 12px}.controls{display:flex;align-items:center;gap:14px;margin-bottom:20px}input{accent-color:#48c6d3;width:220px}output{font-variant-numeric:tabular-nums;min-width:42px}.note{font-size:13px}.changes{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 20px}.changes span{background:#21282d;border-radius:6px;padding:6px 10px;font-size:13px;color:#c4d0d6}@media(max-width:700px){main{padding:20px 14px}.pair{gap:14px}header{display:block}.badge{display:inline-block;margin-top:10px}h1{font-size:22px}figcaption{font-size:13px}}
-</style><main><header><div><h1>Clear Watchface — før og efter</h1><p>Samme klokkeslæt og eksempeldata i begge versioner.</p></div><div class="badge">Forslag · ikke installeret på uret</div></header><div class="changes"><span>Batteri med proportionalt fyld</span><span>Tomme nederste buer skjult</span><span>Større småtekster</span><span>Lysere AOD-konturer</span></div><div class="controls"><label for="battery">Batteri</label><input id="battery" type="range" min="0" max="100" value="78"><output id="percent">78 %</output></div>'''+cards+'''<p class="note">Layoutvisning fra urskivens XML og fonte. AOD vises med designfarverne; urets system dæmper yderligere. Pixel shifting er bevaret.</p></main><script>
+</style><main><header><div><h1>Clear Watchface — before and after</h1><p>The same time and example data in both versions.</p></div><div class="badge">Layout comparison</div></header><div class="changes"><span>Proportional battery fill</span><span>Empty lower arcs hidden</span><span>Larger secondary text</span><span>Brighter AOD outlines</span></div><div class="controls"><label for="battery">Battery</label><input id="battery" type="range" min="0" max="100" value="78"><output id="percent">78 %</output></div>'''+cards+'''<p class="note">Layout preview from the watch-face XML and fonts. AOD uses the design colors; the watch applies further dimming. Pixel shifting is preserved.</p></main><script>
 (() => {
   const slider = document.querySelector('#battery');
   const percent = document.querySelector('#percent');

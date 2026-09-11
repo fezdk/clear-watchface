@@ -1,37 +1,44 @@
-# Layoutforslag 0.2.0-preview1
+# Layout review: 0.2.0-preview1
 
-Layoutet blev installeret som 0.2.0-preview1. Den aktuelle version er 0.2.1,
-hvor AOD-batteriets ikon og procent er dæmpet yderligere til #A0A0A0.
-HTML og billeder dokumenterer den oprindelige før/efter-gennemgang.
+The layout was installed as 0.2.0-preview1. The current version is 0.2.1,
+which further dims the AOD battery icon and percentage to #A0A0A0.
+The HTML pages and image preserve the original before/after review; the
+preview's surrounding text is in English, while the watch-face labels and
+archived screenshot retain their original Danish text.
 
-Åbn `comparison.html` for en selvstændig før/efter-visning. Batteriskyderen
-ændrer procent, bue og det nye ikon. `comparison.png` viser 78 %.
+Open `comparison.html` for a self-contained before/after view. The battery
+slider changes the percentage, arc, and new icon. `comparison.png` shows 78%.
 
-Visningen gengives fra WFF-XML, de bundtede fonte og de samme ikoner.
-Den er et layoutpreview og simulerer ikke en bestemt skærms AOD-dæmpning.
-`before.xml` fastholder layoutet fra den installerede 0.1.0.
+The preview is rendered from WFF XML, the bundled fonts, and the same icons.
+It illustrates layout and does not simulate a specific display's AOD dimming.
+`before.xml` preserves the layout from the installed version 0.1.0.
 
-| Ændring | Før | Forslag |
+| Change | Before | Updated layout |
 | --- | --- | --- |
-| Batteriikon | Tom kontur | Proportionalt fyld, også i AOD |
-| Nederste buer | Tomme spor | Skjult, indtil der er data |
-| Skridt | 13 | 17 |
-| Aktiv batteriprocent | 16 | 20 |
-| Dato | 20 | 23 |
-| Prognoseoverskrift | 15 | 18 |
-| Prognosetemperatur | 20 | 26 |
-| Prognosetekst | 14 | 18 |
-| AOD-konturfarve | #808080 | #E0E0E0 |
-| AOD-konturbredde | 1,4 | 2,2 |
-| AOD batteriprocent | 17 | 20 |
+| Battery icon | Empty outline | Proportional fill, including AOD |
+| Lower arcs | Empty tracks | Hidden until data is available |
+| Step text size | 13 | 17 |
+| Active battery percentage size | 16 | 20 |
+| Date size | 20 | 23 |
+| Forecast heading size | 15 | 18 |
+| Forecast temperature size | 20 | 26 |
+| Forecast text size | 14 | 18 |
+| AOD outline color | #808080 | #E0E0E0 |
+| AOD outline width | 1.4 | 2.2 |
+| AOD battery percentage size | 17 | 20 |
 
-Størrelser er WFF-layoutenheder, som skaleres til skærmen.
-Pixel shifting og sort baggrund er bevaret.
-Konservativt AOD-estimat: højst 4,638 % lysende pixels, inkl. et helt fyldt
-32 × 20 batterifelt og en tykkere 3-pixel-kontur. Ikke en burn-in-garanti.
+Sizes are WFF layout units, scaled to the display.
+Pixel shifting and the black background are preserved.
+The conservative AOD estimate is at most 4.638% lit-pixel coverage, including
+a fully lit 32 × 20 battery area and a thicker 3-pixel outline. This is not a
+burn-in guarantee.
 
-XML-validering, Android-build og lint består. Alle 10 funktionstests består.
-Layoutet er afprøvet på det fysiske ur; brugeren har bekræftet bedre AOD-læselighed.
+XML validation, Android build, lint, and all ten functional tests passed.
+The layout has been tried on the physical watch, and the user confirmed
+improved AOD readability.
 
-Reproducer preview: `python3 tools/layout_preview.py`.
-Dækningsestimat: `aod-coverage-preview.json`. Build- og testlogs gemmes kun lokalt.
+Generate a preview of the current source with `python3 tools/layout_preview.py`.
+This refreshes both HTML files using the current watch-face XML; it does not
+recreate the archived screenshot or the exact historical 0.2.0 preview.
+Coverage estimate: `aod-coverage-preview.json`. Build and test logs are kept
+locally only.

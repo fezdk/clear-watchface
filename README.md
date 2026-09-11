@@ -1,36 +1,44 @@
 # Clear Watchface
 
-**Status:** 0.2.1 er installeret og versionskontrolleret på uret.
-AOD-batteriets ikon og procent er dæmpet; tidens lysstyrke og pixel shifting er bevaret.
-Se [før/efter](design/comparison-v2.html) for layoutændringerne.
+A standalone Watch Face Format 2 watch face for Samsung Galaxy Watch9,
+with a clear active display and a minimal always-on display (AOD).
+The package contains resources only, with no runtime app code or companion app.
 
-Selvstændig urskive i Watch Face Format 2. Første version til afprøvning på
-Samsung Galaxy Watch9; implementeret og afprøvet i Wear OS-emulator.
-Pakken er ressourcebaseret og indeholder ingen appkode eller ledsager-app.
+**Status:** Version 0.2.1 is installed on the physical watch, with its installed
+version verified. The AOD battery icon and percentage are dimmed; the time
+brightness and pixel shifting are preserved. See the
+[before/after preview](design/comparison-v2.html) for the earlier layout changes.
+The watch face has also been tested in a Wear OS emulator.
 
-## Design og data
+## Design and data
 
-- Aktiv: 24-timers ur uden sekunder, ugedag og dato, aktuelt vejr og et interval
-  for de næste fire timer.
-- Fire buer med ikoner/tal samlet inden for buerne: skridt øverst til venstre,
-  batteri øverst til højre. De to nederste er skjult, indtil der er valgt data til dem.
-- AOD: dæmpede konturtal og et lille konturbatteri med procent øverst til højre.
-- Systemets lokale tidszone bruges automatisk. Datotekst afhænger af systemets lokalisering; de øvrige labels er danske.
-- Skridt/mål, batteri og vejr hentes via WFF-systemdatakilder. Vi antager ikke,
-  at de nødvendigvis matcher en bestemt Samsung Health- eller vejrapp.
-- Manglende skridtmål viser kun antal skridt; aldrig `0 / 0`.
-- Manglende vejr/prognose vises tydeligt. Prognosen kræver alle fire timer.
-  Intervallet er laveste/højeste temperatur i timerne +1 til +4. Teksten angiver
-  varslet torden, slud, sne eller regn i perioden, med den rækkefølge som prioritet.
-  Uden disse vises “Ingen nedbør meldt”. Der er ingen hardkodet vejrdata i APK'en.
-- Datakvalitet, opdateringshastighed og tilgængelighed for aktuel lokation
-  afhænger af urets WFF-vejrleverandør. Skal afprøves på det fysiske ur.
+- Active display: 24-hour time without seconds, weekday and date, current
+  weather, and a forecast summary for the next four hours.
+- Four arcs with icons and values placed inside them: steps at the upper left,
+  battery at the upper right. The two lower arcs remain hidden until data is
+  assigned to them.
+- AOD: dimmed outlined digits and a small battery icon with proportional fill
+  and a percentage at the upper right.
+- The system's local time zone is used automatically. Date text follows system
+  localization; other watch-face labels are currently in Danish.
+- Steps, step goal, battery, and weather come from WFF system data sources.
+  They are not assumed to match any particular Samsung Health or weather app.
+- When the step goal is unavailable, only the step count is shown, never `0 / 0`.
+- Missing weather or forecast data is indicated explicitly. The forecast
+  requires all four hours and shows the lowest and highest temperatures across
+  hours +1 through +4. Its text reports thunderstorms, sleet, snow, or rain,
+  in that priority order. Otherwise it reports no precipitation forecast
+  (currently displayed as “Ingen nedbør meldt”). The APK has no hardcoded
+  weather data.
+- Data quality, refresh rate, and availability for the current location depend
+  on the watch's WFF weather provider and require verification on the physical
+  watch.
 
-## Byg og kontroller
+## Build and validate
 
-Kræver Java 17+, Android SDK platform 36 og adgang til Gradle-afhængigheder ved
-første build. `local.properties` skal indeholde `sdk.dir=/sti/til/Android/Sdk`,
-eller `ANDROID_HOME` skal være sat. Minimum Android API er 35.
+Requires Java 17+, Android SDK platform 36, and access to Gradle dependencies
+for the first build. Set `sdk.dir=/path/to/Android/Sdk` in `local.properties`,
+or set `ANDROID_HOME`. The minimum Android API level is 35.
 
 ```sh
 ./gradlew :watchface:assembleDebug :watchface:lintDebug
@@ -38,45 +46,55 @@ python3 tools/test_watchface.py
 python3 tools/check_aod.py
 ```
 
-Den officielle WFF XML-validator kører automatisk før hvert build.
-Python-tests er udviklerværktøjer og pakkes ikke ind i urskiven.
-`check_aod.py` kræver Pillow og laver et konservativt estimat af lysende pixels.
+The official WFF XML validator runs automatically before each build.
+The Python tests are development tools and are not packaged in the watch face.
+`check_aod.py` requires Pillow and estimates lit-pixel coverage conservatively.
 
 APK: `watchface/build/outputs/apk/debug/watchface-debug.apk`.
-Dette er en debug-signeret testudgave; der er ikke publiceret noget i en butik.
+This is a debug-signed test build; no store release has been published.
 
-## Installation på et ur
+## Install on a watch
 
-Aktivér udviklerindstillinger og trådløs debugging på uret. Par og forbind fra
-Android SDK's `adb`; brug de porte, uret selv viser (parring og forbindelse har
-normalt forskellige porte):
+Enable developer options and wireless debugging on the watch. Pair and connect
+using the Android SDK's `adb` and the ports displayed by the watch. Pairing and
+connection usually use different ports:
 
 ```sh
-adb pair UR_IP:PARRINGSPORT
-adb connect UR_IP:DEBUGPORT
-adb -s UR_IP:DEBUGPORT install -r watchface/build/outputs/apk/debug/watchface-debug.apk
+adb pair WATCH_IP:PAIRING_PORT
+adb connect WATCH_IP:DEBUG_PORT
+adb -s WATCH_IP:DEBUG_PORT install -r watchface/build/outputs/apk/debug/watchface-debug.apk
 ```
 
-Vælg derefter **Clear Watchface** i urets urskivevælger. Aktivér Always On Display
-på uret for at afprøve AOD. Version 0.2.1 er installeret på det fysiske ur; læselighed og data afprøves af brugeren.
+Select **Clear Watchface** in the watch-face picker. Enable Always On Display
+on the watch to try AOD. Version 0.2.1 is installed on the physical watch;
+readability and data behavior are being evaluated by the user.
 
-## Redigering
+## Editing
 
-`tools/generate.py` er kilden til layout, udtryk og de små tegnede ikoner.
-Efter en ændring: `python3 tools/generate.py`, derefter byg og test igen.
-XML-filen `watchface/src/main/res/raw/watchface.xml` og de genererede ikoner er
-inkluderet, så almindeligt Android-build ikke kræver Python.
-Bundtede DejaVu-fonte giver ens geometri mellem aktiv og ambient visning.
-Licenser findes i `licenses/`.
+`tools/generate.py` is the source for the layout, expressions, and small drawn
+icons. After editing it, run `python3 tools/generate.py`, then build and test.
+The XML file `watchface/src/main/res/raw/watchface.xml` and generated icons are
+included, so a normal Android build does not require Python.
+Bundled DejaVu fonts provide consistent geometry in active and ambient modes.
 
-`tools/make_fixture.py /tmp/clear-fixture --scenario rain` opretter et separat
-projekt med eksempeldata og pakkenavnet `dk.nezar.clearwatchface.fixture`.
-Scenarier: rain, dry, snow, storm, missing, partial. Det ændrer ikke den rigtige
-urskive. Testpakker er mærket **Clear · TESTDATA** og skal ikke bruges som ur.
-Skærmbilleder i `docs/` er fra emulatoren; `active-example.png` bruger eksempeldata,
-mens `aod-device.png` viser produktionspakken med emulatorens tid og batteri.
+`python3 tools/make_fixture.py /tmp/clear-fixture --scenario rain` creates a
+separate project with example data and package name
+`dk.nezar.clearwatchface.fixture`. Available scenarios: rain, dry, snow, storm,
+missing, partial. It does not modify the actual watch face. Fixture packages
+are labeled **Clear · TESTDATA** and are not intended for everyday use.
+Screenshots in `docs/` are from the emulator: `active-example.png` uses example
+data, while `aod-device.png` shows the production package with the emulator's
+time and battery level. Screenshots retain the watch face's Danish labels.
 
-Se [AOD og burn-in](docs/AOD.md) og [validering](docs/VALIDATION.md).
+See [AOD and burn-in](docs/AOD.md) and [validation](docs/VALIDATION.md).
 
-Lokale SDK-indstillinger, buildresultater, logs og signeringsnøgler er ikke
-versionsstyret. Gradle bruger den lokale debug-nøgle ved testbuild.
+Local SDK settings, build outputs, logs, and signing keys are excluded from
+version control. Gradle uses the local debug key for test builds.
+
+## License
+
+Original project code and documentation are licensed under the
+[MIT License](LICENSE).
+Bundled third-party components retain their own licenses: see
+[DejaVu fonts](licenses/DejaVu.txt),
+[WFF validator](licenses/WFF-validator.txt), and dependency notices in the JARs.

@@ -1,0 +1,28 @@
+# Local build output and caches
+.gradle/
+**/build/
+output/
+*.log
+__pycache__/
+.venv/
+
+# Machine-specific settings
+local.properties
+.idea/
+*.iml
+.DS_Store
+
+# Credentials and signing material
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+key.properties
+keystore.properties
+credentials.json
+secrets.properties

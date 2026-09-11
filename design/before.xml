@@ -1,0 +1,336 @@
+<?xml version='1.0' encoding='utf-8'?>
+<WatchFace width="450" height="450">
+  <Scene backgroundColor="#000000">
+    <Group name="interactive" x="0" y="0" width="450" height="450">
+      <Variant mode="AMBIENT" target="alpha" value="0" />
+      <Localization locales="da_DK" />
+      <PartDraw name="steps" x="0" y="0" width="450" height="450">
+        <Arc centerX="225" centerY="225" width="408" height="408" startAngle="285" endAngle="345">
+          <Stroke color="#303439" thickness="7" cap="ROUND" />
+        </Arc>
+      </PartDraw>
+      <Condition>
+        <Expressions>
+          <Expression name="steps_nonzero">[STEP_PERCENT] &gt; 0</Expression>
+        </Expressions>
+        <Compare expression="steps_nonzero">
+          <PartDraw name="steps_fill" x="0" y="0" width="450" height="450">
+            <Arc centerX="225" centerY="225" width="408" height="408" startAngle="285" endAngle="345">
+              <Transform target="endAngle" value="285 + 60 * clamp([STEP_PERCENT], 0, 100) / 100" />
+              <Stroke color="#48C6D3" thickness="7" cap="ROUND" />
+            </Arc>
+          </PartDraw>
+        </Compare>
+      </Condition>
+      <PartDraw name="battery" x="0" y="0" width="450" height="450">
+        <Arc centerX="225" centerY="225" width="408" height="408" startAngle="15" endAngle="75">
+          <Stroke color="#303439" thickness="7" cap="ROUND" />
+        </Arc>
+      </PartDraw>
+      <Condition>
+        <Expressions>
+          <Expression name="battery_nonzero">[BATTERY_PERCENT] &gt; 0</Expression>
+        </Expressions>
+        <Compare expression="battery_nonzero">
+          <PartDraw name="battery_fill" x="0" y="0" width="450" height="450">
+            <Arc centerX="225" centerY="225" width="408" height="408" startAngle="15" endAngle="75">
+              <Transform target="endAngle" value="15 + 60 * clamp([BATTERY_PERCENT], 0, 100) / 100" />
+              <Stroke color="#48C6D3" thickness="7" cap="ROUND" />
+            </Arc>
+          </PartDraw>
+        </Compare>
+      </Condition>
+      <PartDraw name="reserved_lower_right" x="0" y="0" width="450" height="450">
+        <Arc centerX="225" centerY="225" width="408" height="408" startAngle="105" endAngle="165">
+          <Stroke color="#303439" thickness="7" cap="ROUND" />
+        </Arc>
+      </PartDraw>
+      <PartDraw name="reserved_lower_left" x="0" y="0" width="450" height="450">
+        <Arc centerX="225" centerY="225" width="408" height="408" startAngle="195" endAngle="255">
+          <Stroke color="#303439" thickness="7" cap="ROUND" />
+        </Arc>
+      </PartDraw>
+      <PartImage x="88" y="97" width="26" height="26">
+        <Image resource="steps" />
+      </PartImage>
+      <Condition>
+        <Expressions>
+          <Expression name="goal_known">[STEP_GOAL] &gt; 0</Expression>
+        </Expressions>
+        <Compare expression="goal_known">
+          <PartText name="step_count_and_goal" x="47" y="124" width="132" height="24">
+            <Text align="CENTER" maxLines="1">
+              <Font family="clear_regular" size="13" color="#F2F3F4">
+                <Template>%,d / %,d<Parameter expression="[STEP_COUNT]" />
+                  <Parameter expression="[STEP_GOAL]" />
+                </Template>
+              </Font>
+            </Text>
+          </PartText>
+        </Compare>
+        <Default>
+          <PartText name="step_count_without_goal" x="47" y="124" width="132" height="24">
+            <Text align="CENTER" maxLines="1">
+              <Font family="clear_regular" size="13" color="#F2F3F4">
+                <Template>%,d skridt<Parameter expression="[STEP_COUNT]" />
+                </Template>
+              </Font>
+            </Text>
+          </PartText>
+        </Default>
+      </Condition>
+      <PartImage x="321" y="102" width="28" height="18">
+        <Image resource="battery" />
+      </PartImage>
+      <PartText name="battery_percent" x="306" y="124" width="61" height="24">
+        <Text align="CENTER" maxLines="1">
+          <Font family="clear_regular" size="16" color="#F2F3F4">
+            <Template>%d%%<Parameter expression="[BATTERY_PERCENT]" />
+            </Template>
+          </Font>
+        </Text>
+      </PartText>
+      <PartText name="date" x="105" y="143" width="240" height="32">
+        <Text align="CENTER" maxLines="1">
+          <Font family="clear_regular" size="20" color="#B5BCC3">
+            <Template>%s %d. %s<Parameter expression="[DAY_OF_WEEK_S]" />
+              <Parameter expression="[DAY]" />
+              <Parameter expression="[MONTH_S]" />
+            </Template>
+          </Font>
+        </Text>
+      </PartText>
+      <PartText name="time" x="35" y="174" width="380" height="108">
+        <Text align="CENTER" maxLines="1">
+          <Font family="clear_bold" size="100" color="#F2F3F4">
+            <Template>%s:%s<Parameter expression="[HOUR_0_23_Z]" />
+              <Parameter expression="[MINUTE_Z]" />
+            </Template>
+          </Font>
+        </Text>
+      </PartText>
+      <Condition>
+        <Expressions>
+          <Expression name="current_available">[WEATHER.IS_AVAILABLE]</Expression>
+        </Expressions>
+        <Compare expression="current_available">
+          <Condition>
+            <Expressions>
+              <Expression name="clear">[WEATHER.CONDITION] == 1 || [WEATHER.CONDITION] == 8</Expression>
+              <Expression name="cloud">[WEATHER.CONDITION] == 2</Expression>
+              <Expression name="fog">[WEATHER.CONDITION] == 3 || [WEATHER.CONDITION] == 13</Expression>
+              <Expression name="rain">[WEATHER.CONDITION] == 4 || [WEATHER.CONDITION] == 6 || [WEATHER.CONDITION] == 12</Expression>
+              <Expression name="snow">[WEATHER.CONDITION] == 5 || [WEATHER.CONDITION] == 7 || [WEATHER.CONDITION] == 11</Expression>
+              <Expression name="storm">[WEATHER.CONDITION] == 9</Expression>
+              <Expression name="sleet">[WEATHER.CONDITION] == 10</Expression>
+              <Expression name="partly">[WEATHER.CONDITION] == 14</Expression>
+              <Expression name="wind">[WEATHER.CONDITION] == 15</Expression>
+            </Expressions>
+            <Compare expression="clear">
+              <Condition>
+                <Expressions>
+                  <Expression name="day">[WEATHER.IS_DAY]</Expression>
+                </Expressions>
+                <Compare expression="day">
+                  <PartImage x="179" y="63" width="40" height="40">
+                    <Image resource="weather_clear" />
+                  </PartImage>
+                </Compare>
+                <Default>
+                  <PartImage x="179" y="63" width="40" height="40">
+                    <Image resource="weather_moon" />
+                  </PartImage>
+                </Default>
+              </Condition>
+            </Compare>
+            <Compare expression="cloud">
+              <PartImage x="179" y="63" width="40" height="40">
+                <Image resource="weather_cloud" />
+              </PartImage>
+            </Compare>
+            <Compare expression="fog">
+              <PartImage x="179" y="63" width="40" height="40">
+                <Image resource="weather_fog" />
+              </PartImage>
+            </Compare>
+            <Compare expression="rain">
+              <PartImage x="179" y="63" width="40" height="40">
+                <Image resource="weather_rain" />
+              </PartImage>
+            </Compare>
+            <Compare expression="snow">
+              <PartImage x="179" y="63" width="40" height="40">
+                <Image resource="weather_snow" />
+              </PartImage>
+            </Compare>
+            <Compare expression="storm">
+              <PartImage x="179" y="63" width="40" height="40">
+                <Image resource="weather_storm" />
+              </PartImage>
+            </Compare>
+            <Compare expression="sleet">
+              <PartImage x="179" y="63" width="40" height="40">
+                <Image resource="weather_sleet" />
+              </PartImage>
+            </Compare>
+            <Compare expression="partly">
+              <PartImage x="179" y="63" width="40" height="40">
+                <Image resource="weather_partly" />
+              </PartImage>
+            </Compare>
+            <Compare expression="wind">
+              <PartImage x="179" y="63" width="40" height="40">
+                <Image resource="weather_wind" />
+              </PartImage>
+            </Compare>
+            <Default>
+              <PartImage x="179" y="63" width="40" height="40">
+                <Image resource="weather_unknown" />
+              </PartImage>
+            </Default>
+          </Condition>
+          <PartText name="temperature" x="218" y="66" width="65" height="38">
+            <Text align="CENTER" maxLines="1">
+              <Font family="clear_regular" size="28" color="#F2F3F4">
+                <Template>%d°<Parameter expression="[WEATHER.TEMPERATURE]" />
+                </Template>
+              </Font>
+            </Text>
+          </PartText>
+          <Condition>
+            <Expressions>
+              <Expression name="stale">[WEATHER.IS_ERROR]</Expression>
+            </Expressions>
+            <Compare expression="stale">
+              <PartText name="weather_stale" x="179" y="107" width="110" height="18">
+                <Text align="CENTER" maxLines="1">
+                  <Font family="clear_regular" size="10" color="#B5BCC3">Sidst kendte vejr</Font>
+                </Text>
+              </PartText>
+            </Compare>
+          </Condition>
+        </Compare>
+        <Default>
+          <PartText name="weather_missing" x="158" y="78" width="134" height="25">
+            <Text align="CENTER" maxLines="1">
+              <Font family="clear_regular" size="16" color="#B5BCC3">Vejr —</Font>
+            </Text>
+          </PartText>
+        </Default>
+      </Condition>
+      <Condition>
+        <Expressions>
+          <Expression name="forecast_available">[WEATHER.HOURS.1.IS_AVAILABLE] &amp;&amp; [WEATHER.HOURS.1.CONDITION] &gt; 0 &amp;&amp; [WEATHER.HOURS.2.IS_AVAILABLE] &amp;&amp; [WEATHER.HOURS.2.CONDITION] &gt; 0 &amp;&amp; [WEATHER.HOURS.3.IS_AVAILABLE] &amp;&amp; [WEATHER.HOURS.3.CONDITION] &gt; 0 &amp;&amp; [WEATHER.HOURS.4.IS_AVAILABLE] &amp;&amp; [WEATHER.HOURS.4.CONDITION] &gt; 0</Expression>
+        </Expressions>
+        <Compare expression="forecast_available">
+          <PartText name="forecast_heading" x="110" y="324" width="230" height="24">
+            <Text align="CENTER" maxLines="1">
+              <Font family="clear_regular" size="15" color="#B5BCC3">NÆSTE 4 TIMER</Font>
+            </Text>
+          </PartText>
+          <PartText name="forecast_range" x="136" y="350" width="178" height="29">
+            <Text align="CENTER" maxLines="1">
+              <Font family="clear_regular" size="20" color="#F2F3F4">
+                <Template>%d–%d°<Parameter expression="round((((([WEATHER.HOURS.1.TEMPERATURE]) + ([WEATHER.HOURS.2.TEMPERATURE]) - abs(([WEATHER.HOURS.1.TEMPERATURE]) - ([WEATHER.HOURS.2.TEMPERATURE]))) / 2) + ((([WEATHER.HOURS.3.TEMPERATURE]) + ([WEATHER.HOURS.4.TEMPERATURE]) - abs(([WEATHER.HOURS.3.TEMPERATURE]) - ([WEATHER.HOURS.4.TEMPERATURE]))) / 2) - abs(((([WEATHER.HOURS.1.TEMPERATURE]) + ([WEATHER.HOURS.2.TEMPERATURE]) - abs(([WEATHER.HOURS.1.TEMPERATURE]) - ([WEATHER.HOURS.2.TEMPERATURE]))) / 2) - ((([WEATHER.HOURS.3.TEMPERATURE]) + ([WEATHER.HOURS.4.TEMPERATURE]) - abs(([WEATHER.HOURS.3.TEMPERATURE]) - ([WEATHER.HOURS.4.TEMPERATURE]))) / 2))) / 2)" />
+                  <Parameter expression="round((((([WEATHER.HOURS.1.TEMPERATURE]) + ([WEATHER.HOURS.2.TEMPERATURE]) + abs(([WEATHER.HOURS.1.TEMPERATURE]) - ([WEATHER.HOURS.2.TEMPERATURE]))) / 2) + ((([WEATHER.HOURS.3.TEMPERATURE]) + ([WEATHER.HOURS.4.TEMPERATURE]) + abs(([WEATHER.HOURS.3.TEMPERATURE]) - ([WEATHER.HOURS.4.TEMPERATURE]))) / 2) + abs(((([WEATHER.HOURS.1.TEMPERATURE]) + ([WEATHER.HOURS.2.TEMPERATURE]) + abs(([WEATHER.HOURS.1.TEMPERATURE]) - ([WEATHER.HOURS.2.TEMPERATURE]))) / 2) - ((([WEATHER.HOURS.3.TEMPERATURE]) + ([WEATHER.HOURS.4.TEMPERATURE]) + abs(([WEATHER.HOURS.3.TEMPERATURE]) - ([WEATHER.HOURS.4.TEMPERATURE]))) / 2))) / 2)" />
+                </Template>
+              </Font>
+            </Text>
+          </PartText>
+          <Condition>
+            <Expressions>
+              <Expression name="storm">[WEATHER.HOURS.1.CONDITION] == 9 || [WEATHER.HOURS.2.CONDITION] == 9 || [WEATHER.HOURS.3.CONDITION] == 9 || [WEATHER.HOURS.4.CONDITION] == 9</Expression>
+              <Expression name="sleet">[WEATHER.HOURS.1.CONDITION] == 10 || [WEATHER.HOURS.2.CONDITION] == 10 || [WEATHER.HOURS.3.CONDITION] == 10 || [WEATHER.HOURS.4.CONDITION] == 10</Expression>
+              <Expression name="snow">[WEATHER.HOURS.1.CONDITION] == 5 || [WEATHER.HOURS.1.CONDITION] == 7 || [WEATHER.HOURS.1.CONDITION] == 11 || [WEATHER.HOURS.2.CONDITION] == 5 || [WEATHER.HOURS.2.CONDITION] == 7 || [WEATHER.HOURS.2.CONDITION] == 11 || [WEATHER.HOURS.3.CONDITION] == 5 || [WEATHER.HOURS.3.CONDITION] == 7 || [WEATHER.HOURS.3.CONDITION] == 11 || [WEATHER.HOURS.4.CONDITION] == 5 || [WEATHER.HOURS.4.CONDITION] == 7 || [WEATHER.HOURS.4.CONDITION] == 11</Expression>
+              <Expression name="rain">[WEATHER.HOURS.1.CONDITION] == 4 || [WEATHER.HOURS.1.CONDITION] == 6 || [WEATHER.HOURS.1.CONDITION] == 12 || [WEATHER.HOURS.2.CONDITION] == 4 || [WEATHER.HOURS.2.CONDITION] == 6 || [WEATHER.HOURS.2.CONDITION] == 12 || [WEATHER.HOURS.3.CONDITION] == 4 || [WEATHER.HOURS.3.CONDITION] == 6 || [WEATHER.HOURS.3.CONDITION] == 12 || [WEATHER.HOURS.4.CONDITION] == 4 || [WEATHER.HOURS.4.CONDITION] == 6 || [WEATHER.HOURS.4.CONDITION] == 12</Expression>
+            </Expressions>
+            <Compare expression="storm">
+              <PartImage x="207" y="284" width="36" height="36">
+                <Image resource="weather_storm" />
+              </PartImage>
+              <PartText name="forecast_storm" x="110" y="380" width="230" height="24">
+                <Text align="CENTER" maxLines="1">
+                  <Font family="clear_regular" size="14" color="#B5BCC3">Torden i perioden</Font>
+                </Text>
+              </PartText>
+            </Compare>
+            <Compare expression="sleet">
+              <PartImage x="207" y="284" width="36" height="36">
+                <Image resource="weather_sleet" />
+              </PartImage>
+              <PartText name="forecast_sleet" x="110" y="380" width="230" height="24">
+                <Text align="CENTER" maxLines="1">
+                  <Font family="clear_regular" size="14" color="#B5BCC3">Slud i perioden</Font>
+                </Text>
+              </PartText>
+            </Compare>
+            <Compare expression="snow">
+              <PartImage x="207" y="284" width="36" height="36">
+                <Image resource="weather_snow" />
+              </PartImage>
+              <PartText name="forecast_snow" x="110" y="380" width="230" height="24">
+                <Text align="CENTER" maxLines="1">
+                  <Font family="clear_regular" size="14" color="#B5BCC3">Sne i perioden</Font>
+                </Text>
+              </PartText>
+            </Compare>
+            <Compare expression="rain">
+              <PartImage x="207" y="284" width="36" height="36">
+                <Image resource="weather_rain" />
+              </PartImage>
+              <PartText name="forecast_rain" x="110" y="380" width="230" height="24">
+                <Text align="CENTER" maxLines="1">
+                  <Font family="clear_regular" size="14" color="#B5BCC3">Regn i perioden</Font>
+                </Text>
+              </PartText>
+            </Compare>
+            <Default>
+              <PartImage x="207" y="284" width="36" height="36">
+                <Image resource="weather_partly" />
+              </PartImage>
+              <PartText name="forecast_dry" x="110" y="380" width="230" height="24">
+                <Text align="CENTER" maxLines="1">
+                  <Font family="clear_regular" size="14" color="#B5BCC3">Ingen nedbør meldt</Font>
+                </Text>
+              </PartText>
+            </Default>
+          </Condition>
+        </Compare>
+        <Default>
+          <PartText name="forecast_missing" x="100" y="329" width="250" height="28">
+            <Text align="CENTER" maxLines="1">
+              <Font family="clear_regular" size="16" color="#B5BCC3">Prognose ikke tilgængelig</Font>
+            </Text>
+          </PartText>
+        </Default>
+      </Condition>
+    </Group>
+    <Group name="ambient_shift" x="0" y="0" width="450" height="450" alpha="0">
+      <Variant mode="AMBIENT" target="alpha" value="255" />
+      <Transform target="x" value="(([HOUR_0_23] * 60 + [MINUTE]) % 5) - 2" />
+      <Transform target="y" value="(floor(([HOUR_0_23] * 60 + [MINUTE]) / 5) % 5) - 2" />
+      <PartText name="ambient_time" x="35" y="174" width="380" height="108">
+        <Text align="CENTER" maxLines="1">
+          <Font family="clear_bold" size="100" color="#000000">
+            <Outline width="1.4" color="#808080">
+              <Template>%s:%s<Parameter expression="[HOUR_0_23_Z]" />
+                <Parameter expression="[MINUTE_Z]" />
+              </Template>
+            </Outline>
+          </Font>
+        </Text>
+      </PartText>
+      <PartImage x="308" y="106" width="25" height="16" tintColor="#808080">
+        <Image resource="battery" />
+      </PartImage>
+      <PartText name="ambient_battery" x="337" y="102" width="57" height="24">
+        <Text align="CENTER" maxLines="1">
+          <Font family="clear_regular" size="17" color="#808080">
+            <Template>%d%%<Parameter expression="[BATTERY_PERCENT]" />
+            </Template>
+          </Font>
+        </Text>
+      </PartText>
+    </Group>
+  </Scene>
+</WatchFace>

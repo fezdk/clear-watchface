@@ -1,0 +1,4 @@
+<lint>
+    <!-- WFF resolves these resources by name at runtime, outside Android code. -->
+    <issue id="UnusedResources"><ignore path="src/main/res/" /></issue>
+</lint>

@@ -1,0 +1,11 @@
+{
+  "method": "conservative source-font estimate; 3px outline; ignores dimming",
+  "screen_units": 450,
+  "time_cases": 1440,
+  "battery_cases": 101,
+  "worst_time": "08:38",
+  "max_lit_pixels_percent": 4.638,
+  "limit_percent": 15,
+  "passed": true,
+  "hardware_burn_in_guarantee": false
+}

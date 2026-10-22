@@ -45,3 +45,11 @@ on the physical watch and verified as versionCode 3 / versionName 0.2.1.
 The conservative AOD estimate for the updated layout is 4.638% maximum
 lit-pixel coverage, including a fully lit 32 × 20 battery area and a thicker
 3-pixel time outline. See the [layout review](../design/README.md).
+
+## Current layout and README captures (October 22, 2026)
+
+The active progress arcs now crossfade from red through yellow to green as
+steps or battery percentage increase. AOD remains unchanged. Build, lint,
+official WFF 2 XML validation, and all 11 functional tests passed. Native
+screenshots of the current layout were captured from a separate deterministic
+fixture in a round API 37 emulator. See [capture details](SCREENSHOTS.md).

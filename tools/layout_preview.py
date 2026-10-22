@@ -59,7 +59,13 @@ def render(n,ambient=False):
   # Old AOD icon is white multiplied by the grayscale tint.
   opacity=int(a.get('tintColor','#FFFFFF')[1:3],16)/255
   return f'<image x="{a["x"]}" y="{a["y"]}" width="{a["width"]}" height="{a["height"]}" href="{uri}" opacity="{opacity}"/>'
- if tag=='PartDraw':return f'<g transform="translate({a.get("x",0)} {a.get("y",0)})">'+''.join(render(c,ambient) for c in n)+'</g>'
+ if tag=='PartDraw':
+  alpha_transform=n.find("Transform[@target='alpha']")
+  extra=''
+  if alpha_transform is not None and 'BATTERY_PERCENT' in alpha_transform.get('value',''):
+   offset=50 if n.get('name','').endswith('_green') else 0
+   extra=f' data-battery-alpha-offset="{offset}"'
+  return f'<g transform="translate({a.get("x",0)} {a.get("y",0)})" opacity="{float(a.get("alpha",255))/255}"{extra}>'+''.join(render(c,ambient) for c in n)+'</g>'
  if tag in ['Arc','Rectangle','RoundRectangle']:
   stroke=n.find('Stroke'); fill=n.find('Fill')
   style=f'fill:{fill.get("color") if fill is not None else "none"};'
@@ -96,6 +102,10 @@ page='''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewpor
     percent.textContent = value + ' %';
     document.querySelectorAll('[data-battery-text]').forEach(node => {
       node.textContent = value + '%';
+    });
+    document.querySelectorAll('[data-battery-alpha-offset]').forEach(node => {
+      const offset = Number(node.getAttribute('data-battery-alpha-offset'));
+      node.setAttribute('opacity', Math.max(0, Math.min(1, (value - offset) / 50)));
     });
     document.querySelectorAll('[data-battery-fill]').forEach(node => {
       node.setAttribute('width', Number(node.getAttribute('data-battery-fill')) * value / 100);

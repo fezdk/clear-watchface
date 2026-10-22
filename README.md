@@ -10,6 +10,20 @@ brightness and pixel shifting are preserved. See the
 [before/after preview](design/comparison-v2.html) for the earlier layout changes.
 The watch face has also been tested in a Wear OS emulator.
 
+## Screenshots
+
+| Active display | Always-on display (AOD) |
+| --- | --- |
+| <img src="docs/screenshot-active.png" width="320" alt="Active watch face showing 10:38, weather, step progress, and battery with colored arcs"> | <img src="docs/screenshot-aod.png" width="320" alt="Always-on watch face showing dim outlined time and a small battery indicator"> |
+
+Native screenshots from a round 454 × 454 Wear OS API 37 emulator, captured
+with the current layout and fixed example data: 10:38, 6,400 / 10,000 steps,
+78% battery, and a rainy forecast. Both images use the separate screenshot
+fixture, not live personal data. AOD was captured after normal screen timeout;
+its system dimming is preserved. Actual watch brightness may differ. The small
+dot at the bottom is a system indicator.
+See [capture details and reproduction steps](docs/SCREENSHOTS.md).
+
 ## Design and data
 
 - Active display: 24-hour time without seconds, weekday and date, current
@@ -17,6 +31,9 @@ The watch face has also been tested in a Wear OS emulator.
 - Four arcs with icons and values placed inside them: steps at the upper left,
   battery at the upper right. The two lower arcs remain hidden until data is
   assigned to them.
+- Active arc colors transition smoothly from red at low progress through yellow
+  at 50% to green at 100%, for both steps and battery. The arc is empty at 0%;
+  values above the goal retain a full green arc.
 - AOD: dimmed outlined digits and a small battery icon with proportional fill
   and a percentage at the upper right.
 - The system's local time zone is used automatically. Date text follows system

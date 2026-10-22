@@ -30,6 +30,32 @@ class WatchfaceTests(unittest.TestCase):
             self.assertFalse(evaluate(expression(name+'_nonzero'),{source:0}))
             self.assertTrue(evaluate(expression(name+'_nonzero'),{source:1}))
 
+    def test_progress_colors_crossfade_and_clamp(self):
+        # Composite the actual WFF layers to check endpoints, midpoint, smoothness,
+        # ordering, and out-of-range input without relying on generator constants.
+        for name, source in [('steps', 'STEP_PERCENT'), ('battery', 'BATTERY_PERCENT')]:
+            layers = [DOC.find(f".//PartDraw[@name='{name}_fill{suffix}']")
+                      for suffix in ['', '_yellow', '_green']]
+            previous = None
+            for percent in range(-1, 152):
+                rgb = [0., 0., 0.]
+                for layer in layers:
+                    transform = layer.find("Transform[@target='alpha']")
+                    alpha = 1 if transform is None else evaluate(transform.get('value'), {source: percent}) / 255
+                    self.assertTrue(0 <= alpha <= 1)
+                    arc = layer.find('Arc')
+                    reference = layers[0].find("Arc/Transform[@target='endAngle']").get('value')
+                    self.assertEqual(arc.find("Transform[@target='endAngle']").get('value'), reference)
+                    color = arc.find('Stroke').get('color').lstrip('#')
+                    channels = [int(color[i:i+2], 16) for i in (0, 2, 4)]
+                    rgb = [a * alpha + b * (1-alpha) for a, b in zip(channels, rgb)]
+                if percent in (-1, 0, 50, 100, 151):
+                    expected = (232, 93, 93) if percent <= 0 else ((234, 203, 85) if percent == 50 else (96, 200, 120))
+                    self.assertEqual(tuple(round(c) for c in rgb), expected)
+                if previous is not None:
+                    self.assertLessEqual(max(abs(a-b) for a,b in zip(rgb, previous)), 3)
+                previous = rgb
+
     def test_no_zero_goal_fraction(self):
         self.assertFalse(evaluate(expression('goal_known'),{'STEP_GOAL':0}))
         self.assertTrue(evaluate(expression('goal_known'),{'STEP_GOAL':10000}))

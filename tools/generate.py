@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / 'watchface/src/main/res'
 WHITE, MUTED, CYAN, TRACK, DIM = '#F2F3F4', '#CBD0D5', '#48C6D3', '#303439', '#E0E0E0'
 AOD_BATTERY = '#A0A0A0'
+PROGRESS_RED, PROGRESS_YELLOW, PROGRESS_GREEN = '#E85D5D', '#EACB55', '#60C878'
 SIZE = 450
 HOURS = range(1, 5)
 
@@ -56,10 +57,18 @@ def arc(parent, name, start, end, progress=None):
     node(a, 'Stroke', color=TRACK, thickness=7, cap='ROUND')
     if progress:
         _, show = condition(parent, name+'_nonzero', f'{progress} > 0')
-        q = node(show, 'PartDraw', name=name+'_fill', x=0, y=0, width=450, height=450)
-        a = node(q, 'Arc', centerX=225, centerY=225, width=408, height=408, startAngle=start, endAngle=end)
-        node(a, 'Transform', target='endAngle', value=f'{start} + {end-start} * clamp({progress}, 0, 100) / 100')
-        node(a, 'Stroke', color=CYAN, thickness=7, cap='ROUND')
+        # WFF 2 cannot transform Stroke.color. Crossfade identical arcs instead:
+        # red -> yellow over 0..50%, then opaque yellow -> green over 50..100%.
+        for suffix, color, offset in [('', PROGRESS_RED, None),
+                                      ('_yellow', PROGRESS_YELLOW, 0),
+                                      ('_green', PROGRESS_GREEN, 50)]:
+            q = node(show, 'PartDraw', name=name+'_fill'+suffix, x=0, y=0, width=450, height=450)
+            if offset is not None:
+                node(q, 'Transform', target='alpha',
+                     value=f'255 * clamp(({progress} - {offset}) / 50, 0, 1)')
+            a = node(q, 'Arc', centerX=225, centerY=225, width=408, height=408, startAngle=start, endAngle=end)
+            node(a, 'Transform', target='endAngle', value=f'{start} + {end-start} * clamp({progress}, 0, 100) / 100')
+            node(a, 'Stroke', color=color, thickness=7, cap='ROUND')
 
 def battery_icon(parent, name, x, y, color=WHITE):
     """Small outlined shell with a clamped, proportional fill in both modes."""
